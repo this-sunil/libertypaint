@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "760439812039",
+    "project_id": "libertypaint-b6fa6",
+    "storage_bucket": "libertypaint-b6fa6.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:760439812039:android:493048d7a40739746eb3e2",
+        "android_client_info": {
+          "package_name": "com.example.libertypaints"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "760439812039-qf4k3dd8iumng1a52tg9fttrtca4ulqa.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.libertypaints",
+            "certificate_hash": "611fe04831f17300e8942a4d611598ca79b789ec"
+          }
+        },
+        {
+          "client_id": "760439812039-keoeg83sf1do920h6g602jllusja2rr6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBS68AOKZPbgvID0cv2z2N1roFf-NgGy0I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "760439812039-keoeg83sf1do920h6g602jllusja2rr6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
