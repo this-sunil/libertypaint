@@ -95,16 +95,16 @@ class _HomePageState extends State<HomePage> {
       ),
       body:SingleChildScrollView(
         child: Column(
+
           children: [
-              Container(
-                height: MediaQuery.of(context).size.height,
-                decoration:  const BoxDecoration(
-                  color:  Color(0xff2A2550),
+              Card(
+                margin: EdgeInsets.zero,
+            color:  const Color(0xff2A2550),
+                shape: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.only(
-                    topRight: Radius.circular(20),
-                    topLeft: Radius.circular(20),
-                  ),
-                ),
+                    topRight: Radius.circular(25),
+                     topLeft: Radius.circular(25),
+               )),
                 child: Column(
                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -178,12 +178,40 @@ class _HomePageState extends State<HomePage> {
                         ),
                       );
                     }),
-                    Obx((){
-                      return sliderController.sliderImage.isNotEmpty?
-                      CarouselSlider.builder(
-                          itemCount: sliderController.sliderImage.length,
+                    Padding(
+                      padding: const EdgeInsets.all(15.0),
+                      child: Obx((){
+                        return sliderController.sliderImage.isNotEmpty?
+                        CarouselSlider.builder(
+                            itemCount: sliderController.sliderImage.length,
+                            itemBuilder: (context,index,child){
+                              return ImageViewer(imagePath: "${baseUrl+sliderController.sliderImage[index].image}");
+                            },
+                            options: CarouselOptions(
+                              onPageChanged: (index,reason){
+                                setState(() {
+                                  currentPosition=index;
+                                });
+                              },
+                              autoPlay: true,
+                              height: 200,
+                              aspectRatio: 16/9,
+                              enlargeCenterPage: true,
+                              viewportFraction: .9,
+                              // viewportFraction: 0.83,
+                            ),
+                        ): CarouselSlider.builder(
+                          itemCount: items.length,
                           itemBuilder: (context,index,child){
-                            return ImageViewer(imagePath: "${baseUrl+sliderController.sliderImage[index].image}");
+                            return Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(20),
+                                image: DecorationImage(
+                                  image: AssetImage("${items[index]}"),
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            );
                           },
                           options: CarouselOptions(
                             onPageChanged: (index,reason){
@@ -193,41 +221,19 @@ class _HomePageState extends State<HomePage> {
                             },
                             autoPlay: true,
                             height: 200,
-                            aspectRatio: 16/9,
+                            aspectRatio: 16/8,
                             enlargeCenterPage: true,
                             viewportFraction: .9,
                             // viewportFraction: 0.83,
                           ),
-                      ): CarouselSlider.builder(
-                        itemCount: items.length,
-                        itemBuilder: (context,index,child){
-                          return Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(20),
-                              image: DecorationImage(
-                                image: AssetImage("${items[index]}"),
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                          );
-                        },
-                        options: CarouselOptions(
-                          onPageChanged: (index,reason){
-                            setState(() {
-                              currentPosition=index;
-                            });
-                          },
-                          autoPlay: true,
-                          height: 200,
-                          aspectRatio: 16/8,
-                          enlargeCenterPage: true,
-                          viewportFraction: .9,
-                          // viewportFraction: 0.83,
-                        ),
-                      );
-                    }),
+                        );
+                      }),
+                    ),
 
-                    buildIndicator(),
+                    Padding(
+                      padding: EdgeInsets.all(30),
+                      child: buildIndicator(),
+                    ),
 
 
                     Card(
