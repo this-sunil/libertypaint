@@ -1,4 +1,3 @@
-
 import 'dart:io';
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -18,40 +17,37 @@ import 'package:get/get.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:libertypaints/view/widget/constant.widget.dart';
-late String data;
-bool flag=false;
 
-void main() async{
+late String data;
+bool flag = false;
+
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  SharedPreferences preferences=await SharedPreferences.getInstance();
-  data=preferences.getString("key").toString();
-  if(data!=null){
-    flag=true;
-    print("Token of sharedPreferences $flag");
+  SharedPreferences preferences = await SharedPreferences.getInstance();
+  data = preferences.getString("key").toString();
 
-  }
+
+
   print("Coming started data with main $data");
 
   await Firebase.initializeApp().then((value) {
     FirebaseMessaging.instance.setAutoInitEnabled(true);
-     FirebaseMessaging.instance.getToken();
-    print("Firebase Started in Liberty Paint App ${value
-        .isAutomaticDataCollectionEnabled}");
-    FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(alert: true, badge: true, sound: true);
+    FirebaseMessaging.instance.getToken();
+    print(
+        "Firebase Started in Liberty Paint App ${value.isAutomaticDataCollectionEnabled}");
+    FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
+        alert: true, badge: true, sound: true);
     FirebaseMessaging.onBackgroundMessage(backgroundMessageHandler);
     CustomNotification().init();
-
   });
-  SystemChrome.setPreferredOrientations([
-    DeviceOrientation.portraitUp,
-    DeviceOrientation.portraitDown
-  ]);
+  SystemChrome.setPreferredOrientations(
+      [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
 
   runApp(const MyApp());
-
 }
-Future<void> backgroundMessageHandler(RemoteMessage message) async{
+
+Future<void> backgroundMessageHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
   debugPrint("Remote Message:${message.data}");
 }
@@ -64,28 +60,45 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-final FirebaseMessaging firebaseMessaging=FirebaseMessaging.instance;
+  final FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
   // This widget is the root of your application.
-late SharedPreferences pref;
-int count=0;
+  late SharedPreferences pref;
+  int count = 0;
 
   @override
   void initState() {
     print("Firebase Message");
+    setState(() {
+      setState(() {
+        if(data=="null"){
+          flag=false;
+          print("Token of sharedPreferences $flag");
+
+        }
+        else{
+          flag=true;
+          print("Coming started data with main $data");
+        }
+
+      });
+    });
     FirebaseMessaging.instance.getInitialMessage().then((message) {
-      if(message!=null){
+      if (message != null) {
         setState(() {
           backgroundMessageHandler(message);
         });
       }
     });
 
-
     //CustomNotification().createNotification("Hi Bro","welcome Liberty Paint");
     FirebaseMessaging.onMessageOpenedApp.listen((event) {
       print("${event.notification!.title}");
       print("${event.notification!.body}");
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>NotificationDetails(token: data.toString())));
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) =>
+                  NotificationDetails(token: data.toString())));
     });
 
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
@@ -94,23 +107,22 @@ int count=0;
       RemoteNotification? notification = message.notification;
       AndroidNotification? android = message.notification?.android;
       if (notification != null && android != null) {
+        CustomNotification().createNotification(
+            message.notification!.title.toString(),
+            message.notification!.body.toString(),
+            message.notification!.android!.imageUrl.toString());
 
-        CustomNotification().createNotification(message.notification!.title.toString(),message.notification!.body.toString(),message.notification!.android!.imageUrl.toString());
-
-
-      //print(message.notification!.android!.count);
+        //print(message.notification!.android!.count);
         firebaseMessaging.getToken().then((token) {
           print("Device Token: $token");
           FirebaseFirestore.instance.collection("/$token").doc().set({
-            "title":message.notification!.title,
-            "message":message.notification!.body,
-            "image":message.notification!.android!.imageUrl,
+            "title": message.notification!.title,
+            "message": message.notification!.body,
+            "image": message.notification!.android!.imageUrl,
           });
         });
 
-
-
-      /*  AwesomeNotifications().actionStream.listen((notification) {
+        /*  AwesomeNotifications().actionStream.listen((notification) {
           if (notification.channelKey == 'basic_channel' && Platform.isIOS) {
 
             AwesomeNotifications().getGlobalBadgeCounter().then(
@@ -128,18 +140,18 @@ int count=0;
           sound: true,
         );
 
-      /*  notificationCounterValueNotifer.value=notificationCounterValueNotifer.value+1;
+        /*  notificationCounterValueNotifer.value=notificationCounterValueNotifer.value+1;
         notificationCounterValueNotifer.notifyListeners();
        print("count ${notificationCounterValueNotifer.value}");
         pref.setString("count", notificationCounterValueNotifer.value.toString());*/
       }
-
     });
 
     CustomNotification().display();
-   // listeners here so ValueListenableBuilder will build the widget.
+    // listeners here so ValueListenableBuilder will build the widget.
     super.initState();
   }
+
   @override
   void dispose() {
     AwesomeNotifications().actionSink.close();
@@ -147,10 +159,11 @@ int count=0;
     pref.remove("count");
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<NotificationCounters>(
-      create: (_)=>NotificationCounters(0),
+      create: (_) => NotificationCounters(0),
       child: GetMaterialApp(
         title: 'Liberty Paint',
         //initialBinding: ControllerBinding(),
@@ -160,18 +173,16 @@ int count=0;
           primarySwatch: Colors.brown,
           fontFamily: 'Bitter',
           appBarTheme: const AppBarTheme(
-           titleTextStyle: TextStyle(fontSize: 16,color: Colors.white,fontFamily: 'Bitter'),
+            titleTextStyle: TextStyle(
+                fontSize: 16, color: Colors.white, fontFamily: 'Bitter'),
           ),
           progressIndicatorTheme: ProgressIndicatorThemeData(
             color: Ccolor,
           ),
         ),
-   home: flag==false?const SplashScreen():MainScreen(token: "$data"),
+        home: flag == false ? const SplashScreen() : MainScreen(token: "$data"),
 
-
-
-
-   /*   home: flag==false?SplashScreenView(
+        /*   home: flag==false?SplashScreenView(
           textStyle: TextStyle(fontSize: 25,color: Ccolor),
           imageSize: 300,
           duration: 5000,
@@ -181,9 +192,7 @@ int count=0;
           imageSrc: "images/splashLogo.png", navigateRoute: LoginPage(),
 
         ):MainScreen(token: "$data"),*/
-
       ),
     );
   }
 }
-
